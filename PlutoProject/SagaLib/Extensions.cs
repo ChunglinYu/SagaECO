@@ -8,7 +8,7 @@ namespace SagaLib
 {
     public static class ByteExtensions
     {
-        public static string ToHex(this byte[] @byte)
+        public static string ToHex(this byte[] @bytes)
         {
             //string tmp = "";
             //for (int i = 0; i < b.Length; i++)
@@ -27,7 +27,7 @@ namespace SagaLib
 
             //return Convert.ToHexString(b); // .NET 5.0
 
-            return BitConverter.ToString(@byte).Replace("-", "");
+            return BitConverter.ToString(@bytes).Replace("-", "");
         }
     }
 }

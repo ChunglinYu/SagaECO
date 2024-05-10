@@ -109,10 +109,16 @@ namespace SagaValidation.Network.Client
             p3.data = buf;
             this.netIO.SendPacket(p3);
 
+            // TODO 測試結構轉換
             Packets.Server.SSMG_VERSION_ACK p1 = new SagaValidation.Packets.Server.SSMG_VERSION_ACK();
-            p1.SetResult(SagaValidation.Packets.Server.SSMG_VERSION_ACK.Result.OK);
-            p1.SetVersion(this.client_Version);
-            this.netIO.SendPacket(p1);
+            //p1.SetResult(SagaValidation.Packets.Server.SSMG_VERSION_ACK.Result.OK);
+            //p1.SetVersion(this.client_Version);
+            //this.netIO.SendPacket(p1);
+
+            p1.CheckResult = (short)Packets.Server.SSMG_VERSION_ACK.Result.OK;
+            p1.Version = this.client_Version;
+            this.netIO.SendPacket(p1.ToPacket());
+
 
             Packets.Server.SSMG_LOGIN_ALLOWED p2 = new SagaValidation.Packets.Server.SSMG_LOGIN_ALLOWED();
             this.frontWord = (uint)Global.Random.Next();

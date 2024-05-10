@@ -333,7 +333,9 @@ namespace SagaLib
             for (i = 0; i < s.Length / 2; i++)
             {
                 //b[i] = Conversions.ToByte( "&H" + s.Substring( i * 2, 2 ) );
-                b[i] = Conversions.ToByte(s.Substring(i * 2, 2));
+                //b[i] = Conversions.ToByte(s.Substring(i * 2, 2));  // 較慢
+                b[i] = Convert.ToByte(s.Substring(i * 2, 2), 16); // 較快
+
             }
             return b;
         }

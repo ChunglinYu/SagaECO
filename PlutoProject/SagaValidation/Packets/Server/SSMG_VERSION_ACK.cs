@@ -6,29 +6,43 @@ using SagaLib;
 
 namespace SagaValidation.Packets.Server
 {
-    public class SSMG_VERSION_ACK : Packet
+    public class SSMG_VERSION_ACK : SagaLib.Packets.SSMG_BASE
     {
         public enum Result
         {
             OK = 0,
             VERSION_MISSMATCH = -1
         }
+
+        [Packet(OrderIndex =1)]
+        public short CheckResult { get; set; }
+
+        [Packet(OrderIndex = 2, IsHexCode = true )]
+        public string Version { get; set; }
+
         public SSMG_VERSION_ACK()
         {
-            this.data = new byte[10];
-            this.offset = 14;
-            this.ID = 0x0002;           
+            PacketID = 0x0002;
+            PacketLength = sizeof(ushort);
         }
 
-        public void SetResult(Result res)
-        {
-            this.PutShort((short)res, 2);
-        }
 
-        public void SetVersion(string version)
-        {
-            this.PutBytes(Conversions.HexStr2Bytes(version), 4);
-        }
+        //public SSMG_VERSION_ACK()
+        //{
+        //    this.data = new byte[10];
+        //    this.offset = 14;
+        //    this.ID = 0x0002;           
+        //}
+
+        //public void SetResult(Result res)
+        //{
+        //    this.PutShort((short)res, 2);
+        //}
+
+        //public void SetVersion(string version)
+        //{
+        //    this.PutBytes(Conversions.HexStr2Bytes(version), 4);
+        //}
 
     }
 }
