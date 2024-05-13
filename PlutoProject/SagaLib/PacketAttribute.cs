@@ -12,7 +12,7 @@ namespace SagaLib
 
         public string Encoding { get; set; }
 
-        public bool IsPacketSizeVariable { get; set; }
+        public bool IsDataSizeVariable { get; set; }
 
         public bool IsHexCode { get; set; }
 
@@ -20,7 +20,7 @@ namespace SagaLib
         {
             Encoding = null;
 
-            IsPacketSizeVariable = false;
+            IsDataSizeVariable = false;
 
             IsHexCode = false;
         }

@@ -6,7 +6,7 @@ using SagaLib;
 
 namespace SagaValidation.Packets.Server
 {
-    public class SSMG_LOGIN_ACK : Packet
+    public class SSMG_LOGIN_ACK :  SagaLib.Packets.SSMG_PACKET
     {
         /*
          * result 
@@ -38,52 +38,33 @@ namespace SagaValidation.Packets.Server
             GAME_SMSG_LOGIN_ERR_IPBLOCK = -6,
             GAME_SMSG_GHLOGIN_ERR_101 = -11,
         }
-        public SSMG_LOGIN_ACK()
-        {
-            this.data = new byte[19];
-            this.offset = 14;
-            this.ID = 0x20;            
-        }
 
-        public Result LoginResult
-        {
-            set
-            {
-                this.PutUInt((uint)value, 2);
-            }
-        }
-
-        public uint AccountID
-        {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
-        }
+        [Packet(OrderIndex = 1)]
+        public int LoginResult { get; set; }
+        [Packet(OrderIndex = 2)]
+        public uint AccountID { get; set; }
 
         /// <summary>
         /// ゲストID残り時間         
         /// </summary>
-        public uint RestTestTime
-        {
-            set
-            {
-                this.PutUInt(value, 10);
-            }
-        }
-        
+        [Packet(OrderIndex = 3)]
+        public uint RestTestTime { get; set; }
+
         /// <summary>
         /// ゲストID期限　(1970年1月1日0時0分0秒からの秒数）08/01/11より 
         /// End time of trial(second count since 1st Jan. 1970)
         /// </summary>
-        public uint TestEndTime
-        {
-            set
-            {
-                this.PutUInt(value, 14);
-            }
-        }
+        [Packet(OrderIndex = 4)]
+        public uint TestEndTime { get; set; }
 
+        [Packet(OrderIndex =5)]
+        public byte Unknown { get; set; }
+
+        public SSMG_LOGIN_ACK()
+        {
+            ID = 0x0020;
+            DataLength = sizeof(ushort);
+        }
     }
 }
 

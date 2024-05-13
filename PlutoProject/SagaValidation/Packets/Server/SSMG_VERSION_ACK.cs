@@ -6,7 +6,7 @@ using SagaLib;
 
 namespace SagaValidation.Packets.Server
 {
-    public class SSMG_VERSION_ACK : SagaLib.Packets.SSMG_BASE
+    public class SSMG_VERSION_ACK : SagaLib.Packets.SSMG_PACKET
     {
         public enum Result
         {
@@ -22,28 +22,9 @@ namespace SagaValidation.Packets.Server
 
         public SSMG_VERSION_ACK()
         {
-            PacketID = 0x0002;
-            PacketLength = sizeof(ushort);
+            ID = 0x0002;
+            DataLength = sizeof(ushort);
         }
-
-
-        //public SSMG_VERSION_ACK()
-        //{
-        //    this.data = new byte[10];
-        //    this.offset = 14;
-        //    this.ID = 0x0002;           
-        //}
-
-        //public void SetResult(Result res)
-        //{
-        //    this.PutShort((short)res, 2);
-        //}
-
-        //public void SetVersion(string version)
-        //{
-        //    this.PutBytes(Conversions.HexStr2Bytes(version), 4);
-        //}
-
     }
 }
 

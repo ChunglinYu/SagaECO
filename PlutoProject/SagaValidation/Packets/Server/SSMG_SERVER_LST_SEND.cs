@@ -9,39 +9,18 @@ using SagaDB.Actor;
 
 namespace SagaValidation.Packets.Server
 {
-    public class SSMG_SERVER_LST_SEND : Packet
+    public class SSMG_SERVER_LST_SEND : SagaLib.Packets.SSMG_PACKET
     {
+        [Packet(OrderIndex =1, Encoding = "UTF-8")]
+        public string ServerName { get; set; }
+
+        [Packet(OrderIndex = 2, Encoding = "UTF-8")]
+        public string ServerIP { get; set; }
+
         public SSMG_SERVER_LST_SEND()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x33;
-        }
-        public byte size;
-        public string SevName
-        {
-            set
-            {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[buf.Length + 4];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, 2);
-                this.PutBytes(buf, 3);
-                size = (byte)(buf.Length + 3);
-            }
-        }
-        public string SevIP
-        {
-            set
-            {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[buf.Length + this.data.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, (ushort)(size));
-                this.PutBytes(buf, (ushort)(1 + size));
-            }
+            ID = 0x0033;
+            DataLength = sizeof(ushort);
         }
     }
 }

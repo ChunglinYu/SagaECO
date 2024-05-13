@@ -110,6 +110,8 @@
     <Compile Include="Factory.cs" />
     <Compile Include="LoggerIntern.cs" />
     <Compile Include="MySQLConnectivity.cs" />
+    <Compile Include="PacketAttribute.cs" />
+    <Compile Include="Packets\SSMG_PACKET.cs" />
     <Compile Include="Tasks\Registred.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Vector2D.cs" />

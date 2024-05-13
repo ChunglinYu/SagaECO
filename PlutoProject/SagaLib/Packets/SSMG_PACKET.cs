@@ -8,19 +8,19 @@ using SagaLib;
 
 namespace SagaLib.Packets
 {
-    public class SSMG_BASE
+    public class SSMG_PACKET
     {
         /// <summary>
         /// 不含 PacketLength 本身 sizeof(ushort) 的封包大小。
         /// </summary>
-        [Packet(OrderIndex = -2, IsPacketSizeVariable = true)]
-        public ushort PacketLength { get; set; }
+        [Packet(OrderIndex = -2, IsDataSizeVariable = true)]
+        public ushort DataLength { get; set; }
         [Packet(OrderIndex = -1)]
-        public ushort PacketID { get; set; }
+        public ushort ID { get; set; }
 
-        public SSMG_BASE()
+        public SSMG_PACKET()
         {
-            PacketLength = 0;
+            DataLength = sizeof(ushort);
         }
 
         public Packet ToPacket()
@@ -55,7 +55,7 @@ namespace SagaLib.Packets
                 if (pair.Key.PropertyType == typeof(ushort))
                 {
                     ushort value = 0;
-                    if (!pair.Value.IsPacketSizeVariable)
+                    if (!pair.Value.IsDataSizeVariable)
                         dataSize += sizeof(ushort);
                     else
                         propertySizeVariable = pair.Key;
@@ -107,29 +107,26 @@ namespace SagaLib.Packets
                     }
                     else
                     {
-
-                    }
                         // 寫入結構固定為 資料長度(1 byte) + 資料(? bytes) + 資料結尾 \0 (1 byte)
 
                         if (pair.Value.Encoding != null)
-                    {
-                        encoding = System.Text.Encoding.GetEncoding(pair.Value.Encoding);
-                    }
-                    else
-                    {
-                        encoding = System.Text.Encoding.GetEncoding("UTF-8");
+                        {
+                            encoding = System.Text.Encoding.GetEncoding(pair.Value.Encoding);
+                        }
+                        else
+                        {
+                            encoding = System.Text.Encoding.GetEncoding("UTF-8");
+                        }
+                        buf = encoding.GetBytes(stringValue);
+                        //  寫入bytes 資料長度
+                        m.WriteByte(Convert.ToByte(buf.Length + 1)); // 加結尾碼(\0) 長度 
+                        dataSize += 1;
+                        // 寫入 bytes 資料
+                        m.Write(buf, 0, buf.Length);
+                        m.WriteByte(0); // 字串結尾
+                        dataSize += (ushort)(buf.Length + 1);  // 加結尾碼(\0) 長度 
                     }
 
-                    string stringValue = pair.Key.GetValue(this, null).ToString();
-
-                    buf = encoding.GetBytes(stringValue);
-                    //  寫入bytes 資料長度
-                    m.WriteByte(Convert.ToByte(buf.Length + 1)); // 加結尾碼(\0) 長度 
-                    dataSize += 1;
-                    // 寫入 bytes 資料
-                    m.Write(buf, 0, buf.Length);
-                    m.WriteByte(0); // 字串結尾
-                    dataSize += (ushort)(buf.Length + 1);  // 加結尾碼(\0) 長度 
                 }
                 else if (pair.Key.PropertyType == typeof(byte))
                 {
@@ -162,14 +159,14 @@ namespace SagaLib.Packets
             m.GetBuffer()[1] = (byte)dataSize;
             m.GetBuffer()[0] = (byte)(dataSize >> 8);
 
-            System.Diagnostics.Debug.WriteLine(dataSize);
-            string a = m.ToArray().ToHex();
-            System.Diagnostics.Debug.WriteLine(a);
-
+            System.Diagnostics.Debug.WriteLine("Size={0} - {1} {2}", dataSize, m.ToArray().ToHex(), this.ToString());
+            
             Packet p = new Packet();
-
-            p.offset = 0;
-            p.data = m.GetBuffer();
+            p.data = new byte[dataSize];
+            // data 中不含 封包長度
+            m.Seek(2, System.IO.SeekOrigin.Begin); // 應跟隨 FirstLevelLength，保持一致性
+            m.Read(p.data, 0, dataSize); // MemoryStream.Read(目的寫入,寫入位置,寫入量)
+            p.offset = 2;
 
             return p;
 

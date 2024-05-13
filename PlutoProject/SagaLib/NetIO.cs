@@ -739,5 +739,10 @@ namespace SagaLib
         {
             SendPacket(p, false);
         }
+
+        public void SendPacket(SagaLib.Packets.SSMG_PACKET p)
+        {
+            SendPacket(p.ToPacket());
+        }
     }
 }

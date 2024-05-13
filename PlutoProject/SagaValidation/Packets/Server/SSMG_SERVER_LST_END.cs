@@ -9,14 +9,12 @@ using SagaDB.Actor;
 
 namespace SagaValidation.Packets.Server
 {
-    public class SSMG_SERVER_LST_END : Packet
+    public class SSMG_SERVER_LST_END : SagaLib.Packets.SSMG_PACKET
     {
         public SSMG_SERVER_LST_END()
         {
-            this.data = new byte[2];
-            this.offset = 2;
-            this.ID = 0x34;
+            ID = 0x0034;
+            DataLength = sizeof(ushort);
         }
-
     }
 }

@@ -45,58 +45,62 @@ namespace SagaValidation.Network.Client
         {
             p.GetContent();
 
+            state = SESSION_STATE.LOGIN;
+
             //Establish TCP ACK Flag at first handshake
             Packets.Server.SSMG_LOGIN_ACK p0 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
-            p0.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.OK;
+            p0.LoginResult = (int)Packets.Server.SSMG_LOGIN_ACK.Result.OK;
             this.netIO.SendPacket(p0);
 
-            Account tmp = ValidationServer.accountDB.GetUser(p.UserName.Replace("\\", "").Replace("'", "\\'"));
+            return;
+            
+            //Account tmp = ValidationServer.accountDB.GetUser(p.UserName.Replace("\\", "").Replace("'", "\\'"));
 
-            if (Configuration.Instance.ServerClose == true)
-            {
-                if (tmp.GMLevel <= 200)
-                {
-                    Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
-                    p1.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
-                    this.netIO.SendPacket(p1);
-                    this.netIO.Disconnect();
-                    return;
-                }
-            }
+            //if (Configuration.Instance.ServerClose == true)
+            //{
+            //    if (tmp.GMLevel <= 200)
+            //    {
+            //        Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
+            //        p1.LoginResult = (int)SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
+            //        this.netIO.SendPacket(p1);
+            //        this.netIO.Disconnect();
+            //        return;
+            //    }
+            //}
 
 
-            if (ValidationServer.accountDB.CheckPassword(p.UserName, p.Password, this.frontWord, this.backWord))
-            {
-                //Prepare Account Information 
+            //if (ValidationServer.accountDB.CheckPassword(p.UserName, p.Password, this.frontWord, this.backWord))
+            //{
+            //    //Prepare Account Information 
                 
 
-                //Login ACK should not be here
-                /*
-                Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
-                p1.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.OK;
-                this.netIO.SendPacket(p1);
-                */
-                //Check if Account Banned
-                if (tmp.Banned)
-                {
-                    Packets.Server.SSMG_LOGIN_ACK p2 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
-                    p2.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
-                    this.netIO.SendPacket(p2);
-                    this.netIO.Disconnect();
-                    return;
-                    //TCP Connection terminated.
-                }
+            //    //Login ACK should not be here
+            //    /*
+            //    Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
+            //    p1.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.OK;
+            //    this.netIO.SendPacket(p1);
+            //    */
+            //    //Check if Account Banned
+            //    if (tmp.Banned)
+            //    {
+            //        Packets.Server.SSMG_LOGIN_ACK p2 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
+            //        p2.LoginResult = (int)SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
+            //        this.netIO.SendPacket(p2);
+            //        this.netIO.Disconnect();
+            //        return;
+            //        //TCP Connection terminated.
+            //    }
 
-            }
-            else
-            {
-                Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
-                p1.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
-                this.netIO.SendPacket(p1);
-                this.netIO.Disconnect();
-                return;
-                //TCP Connection terminated.
-            }
+            //}
+            //else
+            //{
+            //    Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
+            //    p1.LoginResult = (int)SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
+            //    this.netIO.SendPacket(p1);
+            //    this.netIO.Disconnect();
+            //    return;
+            //    //TCP Connection terminated.
+            //}
         }
         public void OnSendVersion(Packets.Client.CSMG_SEND_VERSION p)
         {
@@ -109,15 +113,10 @@ namespace SagaValidation.Network.Client
             p3.data = buf;
             this.netIO.SendPacket(p3);
 
-            // TODO 測試結構轉換
             Packets.Server.SSMG_VERSION_ACK p1 = new SagaValidation.Packets.Server.SSMG_VERSION_ACK();
-            //p1.SetResult(SagaValidation.Packets.Server.SSMG_VERSION_ACK.Result.OK);
-            //p1.SetVersion(this.client_Version);
-            //this.netIO.SendPacket(p1);
-
             p1.CheckResult = (short)Packets.Server.SSMG_VERSION_ACK.Result.OK;
             p1.Version = this.client_Version;
-            this.netIO.SendPacket(p1.ToPacket());
+            this.netIO.SendPacket(p1);
 
 
             Packets.Server.SSMG_LOGIN_ALLOWED p2 = new SagaValidation.Packets.Server.SSMG_LOGIN_ALLOWED();
@@ -129,14 +128,38 @@ namespace SagaValidation.Network.Client
         }
         public void OnServerLstSend(Packets.Client.CSMG_SERVERLET_ASK p)
         {
-            Packets.Server.SSMG_SERVER_LST_STAER p1 = new Packets.Server.SSMG_SERVER_LST_STAER();
+            Packets.Server.SSMG_SERVER_LST_START p1 = new Packets.Server.SSMG_SERVER_LST_START();
             this.netIO.SendPacket(p1);
 
-            Packets.Server.SSMG_SERVER_LST_SEND p2 = new Packets.Server.SSMG_SERVER_LST_SEND();
-            p2.SevName = Configuration.Instance.ServerName;
-            p2.SevIP = "T" + Configuration.Instance.ServerIP + "," + Configuration.Instance.ServerIP + "," +
-                Configuration.Instance.ServerIP + "," + Configuration.Instance.ServerIP;
-            this.netIO.SendPacket(p2);
+            //if (state == SESSION_STATE.LOGIN)
+            //{
+            //    state = SESSION_STATE.REDIRECTING;
+            //    // 第一次登入
+            //    Packets.Server.SSMG_SERVER_LST_SEND p2 = new Packets.Server.SSMG_SERVER_LST_SEND();
+            //    p2.SevName = Configuration.Instance.ServerName;
+            //    p2.SevIP = "T" + Configuration.Instance.ServerIP + "," + Configuration.Instance.ServerIP + "," +
+            //        Configuration.Instance.ServerIP + "," + Configuration.Instance.ServerIP;
+            //    this.netIO.SendPacket(p2);
+
+            //    Packets.Server.SSMG_SERVER_LST_SEND p4 = new Packets.Server.SSMG_SERVER_LST_SEND();
+            //    p4.SevName = "";
+            //    p4.SevIP = Configuration.Instance.ServerIP;
+            //    this.netIO.SendPacket(p4);
+
+            //}
+            //else
+            //{
+                Packets.Server.SSMG_SERVER_LST_SEND p2 = new Packets.Server.SSMG_SERVER_LST_SEND();
+                p2.ServerName = Configuration.Instance.ServerName;
+                p2.ServerIP = Configuration.Instance.ServerIP;
+                this.netIO.SendPacket(p2);
+
+                p2.ServerName = "";
+                p2.ServerIP = Configuration.Instance.ServerIP;
+                this.netIO.SendPacket(p2);
+
+            //}
+
 
             Packets.Server.SSMG_SERVER_LST_END p3 = new Packets.Server.SSMG_SERVER_LST_END();
             this.netIO.SendPacket(p3);
