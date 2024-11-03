@@ -45,6 +45,12 @@ namespace SagaLogin
                         charDB.Connect();
                         accountDB.Connect();
                         return true;
+                    case 2:
+                        accountDB = new SQLiteAccountDB(Configuration.Instance.DBHost);
+                        charDB = new SQLiteActorDB(Configuration.Instance.DBHost);
+                        charDB.Connect();
+                        accountDB.Connect();
+                        return true;
                     default :
                         return false;
                 }

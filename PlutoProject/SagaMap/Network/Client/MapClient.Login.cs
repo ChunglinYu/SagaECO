@@ -806,12 +806,16 @@ namespace SagaMap.Network.Client
 
                 }
             }
-            //Check API Item
-            if (this.CheckAPI == false)
+
+            if (Configuration.Instance.DBType == 1)
             {
-                Process pr = new Process();
-                pr.CheckAPIItem(this.Character.CharID, this);
-                this.CheckAPI = true;
+                //Check API Item
+                if (this.CheckAPI == false)
+                {
+                    Process pr = new Process();
+                    pr.CheckAPIItem(this.Character.CharID, this);
+                    this.CheckAPI = true;
+                }
             }
 
 

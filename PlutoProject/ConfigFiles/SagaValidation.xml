@@ -3,10 +3,10 @@
   <Port>12006</Port>
 
   <!-- address of Mysql server or Path to Save for dat implementation-->
-  <dbhost>127.0.0.1</dbhost>
+  <dbhost>.\sagaeco.db</dbhost>
   
   <!-- database name for SQL -->
-  <dbname>cofeco</dbname>
+  <dbname>sagaeco</dbname>
 
   <!-- port for databaser server(SQL or db4o) -->
   <dbport>3306</dbport>
@@ -21,7 +21,7 @@
   <LogLevel>31</LogLevel>
 
   <dbuser>root</dbuser>
-  <dbpass>root</dbpass>
+  <dbpass>123456</dbpass>
 
   <!-- Password used for verify the connection from mapserver -->
 
@@ -30,15 +30,22 @@
   <Version>Saga17</Version>
 
   <!-- 设置服务器IP -->
-  <ServerName>COF</ServerName>
-  <ServerIP>papapa.otaku.asia:12005</ServerIP>
+  <ServerName>SagaECO</ServerName>
+  <ServerIP>127.0.0.1:12000</ServerIP>
+
+  <!-- 服务器維護狀態 -->
+  <ServerClose>False</ServerClose>
+
+  <!-- 客戶端指紋 -->
+  <clientgameversion></clientgameversion>
 
   <!--
   MYSQL = 0
   ACCESS = 1
+  SQLite = 2
   -->  
-  <DBType>0</DBType>
+  <DBType>2</DBType>
   
-  <dbEncoding>gbk</dbEncoding>
+  <dbEncoding>utf-8</dbEncoding>
 
 </SagaValidation>
