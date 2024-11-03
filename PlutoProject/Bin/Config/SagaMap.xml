@@ -4,13 +4,20 @@
   <Port>12001</Port>
 
   <!-- address of Mysql server or Path to Save for dat/access implementation-->
-  <dbhost>127.0.0.1</dbhost>
+  <dbhost>.\sagaeco.db</dbhost>
   
   <!-- database name for SQL -->
   <dbname>sagaeco</dbname>
 
   <!-- port for databaser server(SQL or db4o) -->
   <dbport>3306</dbport>
+
+  <!--
+  MYSQL = 0
+  ACCESS = 1
+  SQLite = 2
+  -->  
+  <DBType>2</DBType>
 
   <!-- 
             Info = 1,
