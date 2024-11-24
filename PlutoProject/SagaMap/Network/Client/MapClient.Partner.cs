@@ -1058,16 +1058,20 @@ namespace SagaMap.Network.Client
                 return;
             if (!this.Character.Inventory.Equipments[EnumEquipSlot.PET].IsPartner)
                 return;
+
+            Packets.Server.SSMG_PARTNER_AI_MODE_SELECTION pr = new Packets.Server.SSMG_PARTNER_AI_MODE_SELECTION();
+            pr.PartnerInventorySlot = this.Character.Inventory.Equipments[EnumEquipSlot.PET].Slot;
+            pr.AIMode = p.AIMode;
             if (p.AIMode >= 3)
             {
                 SendSystemMessage("PARTNER AI系統尚未實裝。");
-                return;
+                pr.unknown0 = 0xFF; // 返回「變更失敗」
             }
-            ActorPartner partner = Character.Partner;
-            partner.ai_mode = p.AIMode;
-            Packets.Server.SSMG_PARTNER_AI_MODE_SELECTION pr = new Packets.Server.SSMG_PARTNER_AI_MODE_SELECTION();
-            pr.PartnerInventorySlot = this.Character.Inventory.Equipments[EnumEquipSlot.PET].Slot;
-            pr.AIMode = partner.ai_mode;
+            else
+            {
+                ActorPartner partner = Character.Partner;
+                partner.ai_mode = p.AIMode;
+            }
             this.netIO.SendPacket(pr);
         }
         #endregion
