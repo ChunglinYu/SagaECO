@@ -47,7 +47,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            //((MapClient)(client)).netIO.Disconnect();
+            ((MapClient)(client)).SendPetDetailInfo();
         }
 
     }
