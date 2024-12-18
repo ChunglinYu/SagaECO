@@ -97,9 +97,10 @@ namespace SagaMap.Network.Client
                         eh.AI.Mode = Partner.PartnerAIFactory.Instance.Items[item.BaseData.petID];
                     else
                         eh.AI.Mode = new Partner.AIMode(1);
-                    SetPartnerSkills(partner);
                     eh.AI.Start();
                     partner.e = eh;
+                    SetPartnerSkills(partner);
+
                     //if (!eh.AI.Hate.ContainsKey(Character.ActorID))
                     //    eh.AI.Hate.Add(Character.ActorID, 10);
 
