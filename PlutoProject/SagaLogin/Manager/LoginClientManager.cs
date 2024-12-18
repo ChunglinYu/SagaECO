@@ -18,7 +18,6 @@ namespace SagaLogin.Manager
 {
     public sealed class LoginClientManager : ClientManager
     {
-        List<LoginClient> clients;
         public Thread check;
         LoginClientManager()
         {
@@ -35,7 +34,6 @@ namespace SagaLogin.Manager
 
             
             */
-            this.clients = new List<LoginClient>();
             this.commandTable = new Dictionary<ushort, Packet>();
 
             commandTable.Add(0xDDDF, new Packets.Client.TOOL_GIFTS());
@@ -98,7 +96,7 @@ namespace SagaLogin.Manager
         /// <summary>
         /// 全部在线客户端，包括Map服务器
         /// </summary>
-        public List<LoginClient> Clients { get { return this.clients; } }
+        public List<LoginClient> Clients { get; private set; }
 
         /// <summary>
         /// Connects new clients
@@ -111,19 +109,19 @@ namespace SagaLogin.Manager
                 string ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
                 Logger.ShowInfo("New client from: " + sock.RemoteEndPoint.ToString(), null);
                 LoginClient client = new LoginClient(sock, this.commandTable);
-                clients.Add(client);
+                Clients.Add(client);
             }
         }
 
         public override void OnClientDisconnect(Client client_t)
         {
-            clients.Remove((LoginClient)client_t);
+            Clients.Remove((LoginClient)client_t);
         }
 
         public LoginClient FindClient(SagaDB.Actor.ActorPC pc)
         {
             var chr =
-                from c in this.clients
+                from c in this.Clients
                 where !c.IsMapServer && c.selectedChar != null
                 select c;
             chr = from c in chr.ToList()
@@ -138,7 +136,7 @@ namespace SagaLogin.Manager
         public LoginClient FindClient(uint charID)
         {
             var chr =
-                from c in this.clients
+                from c in this.Clients
                 where !c.IsMapServer && c.selectedChar != null
                 select c;
             chr = from c in chr.ToList()
@@ -153,7 +151,7 @@ namespace SagaLogin.Manager
         public LoginClient FindClient(string charName)
         {
             var chr =
-                from c in this.clients
+                from c in this.Clients
                 where !c.IsMapServer && c.selectedChar != null
                 select c;
             chr = from c in chr.ToList()
@@ -168,7 +166,7 @@ namespace SagaLogin.Manager
         public List<LoginClient> FindAllOnlineAccounts()
         {
             var chr =
-              from c in clients
+              from c in Clients
               where !c.IsMapServer && c.account != null
               select c;
             if (chr.Count() != 0)
@@ -180,7 +178,7 @@ namespace SagaLogin.Manager
         public LoginClient FindClientAccountID(uint accountID)
         {
             var chr =
-                from c in this.clients
+                from c in this.Clients
                 where !c.IsMapServer && c.account != null
                 select c;
             chr = from c in chr.ToList()
@@ -194,7 +192,7 @@ namespace SagaLogin.Manager
         public LoginClient FindClientAccount(string accountName)
         {
             var chr =
-                from c in this.clients
+                from c in this.Clients
                 where !c.IsMapServer && c.account != null
                 select c;
             chr = from c in chr.ToList()
