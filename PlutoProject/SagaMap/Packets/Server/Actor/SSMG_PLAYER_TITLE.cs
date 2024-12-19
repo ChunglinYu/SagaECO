@@ -28,17 +28,11 @@ namespace SagaMap.Packets.Server
 
         public void PutTitles(List<uint> titles)
         {
-            byte[] buf = new byte[this.data.Length + titles.Count * 4 + 1];
-            this.data.CopyTo(buf, 0);
-            this.data = buf;
-
             offset = 3;
             this.PutByte((byte)titles.Count, 3);
-            offset++;
             foreach (uint title in titles)
             {
                 this.PutUInt(title, offset);
-                offset += 4;
             }
         }
     }

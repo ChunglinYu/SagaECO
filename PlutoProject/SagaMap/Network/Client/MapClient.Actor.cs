@@ -520,6 +520,8 @@ namespace SagaMap.Network.Client
             titles.Add((uint)Character.AInt["称号_谓语"]);
             titles.Add((uint)Character.AInt["称号_战斗"]);
 
+            p.PutTitles(titles);
+
             netIO.SendPacket(p);
             StatusFactory.Instance.CalcStatus(Character);
         }
